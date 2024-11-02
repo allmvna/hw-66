@@ -9,6 +9,7 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 
 const MealList = () => {
     const [meals, setMeals] = useState<ITracker[]>([]);
+    const [totalCalories, setTotalCalories] = useState<number>(0);
 
     const fetchData = useCallback(async () => {
         try {
@@ -23,6 +24,9 @@ const MealList = () => {
                     };
                 });
                 setMeals(mealFromAPI);
+
+                const totalCalories: number = mealFromAPI.reduce((acc, meal) => acc + (meal.calories || 0), 0);
+                setTotalCalories(totalCalories);
             }
         } catch (e) {
             console.error(e);
@@ -31,8 +35,15 @@ const MealList = () => {
 
     const deleteMeal = async (id: string) => {
         try {
-            await axiosAPI.delete(`/meal/${id}.json`);
-            setMeals((prevMeals) => prevMeals.filter((meal) => meal.id !== id));
+            const mealToDelete = meals.find(meal => meal.id === id);
+            if (mealToDelete) {
+                await axiosAPI.delete(`/meal/${id}.json`);
+                setMeals((prevMeals) => {
+                    const updatedMeals = prevMeals.filter((meal) => meal.id !== id);
+                    setTotalCalories(prevTotal => prevTotal - (mealToDelete.calories || 0));
+                    return updatedMeals;
+                });
+            }
         } catch (e) {
             console.error(e);
         }
@@ -48,11 +59,11 @@ const MealList = () => {
                 variant="h4"
                 sx={{ mb: 2, textAlign: "center", color: "#000" }}
             >
-                Posts
+                Meal
             </Typography>
             {meals.length === 0 ? (
                 <Alert severity="info">
-                    There are no posts yet! Go to the "Add" page to add a new post
+                    There are no values yet. Go to the "Add" page to add a new meal!
                 </Alert>
             ) : (
                 <Grid container spacing={2}>
@@ -82,7 +93,7 @@ const MealList = () => {
                                         <Typography sx={{ fontSize: 18, fontWeight: 600 }}>
                                             {meal.description}
                                         </Typography>
-                                        <Typography sx={{ fontSize: 16, marginLeft: 2 }}>
+                                        <Typography sx={{ fontSize: 16, marginLeft: 2, fontWeight: 600}}>
                                             {meal.calories} kcal
                                         </Typography>
                                     </Box>
@@ -112,6 +123,13 @@ const MealList = () => {
                         </Grid>
                     ))}
                 </Grid>
+            )}
+            {meals.length > 0 && totalCalories > 0 && (
+                <Box mt={2}>
+                    <Typography variant="h6" sx={{ color: 'black'}}>
+                        <b>Total: </b>{totalCalories} calories
+                    </Typography>
+                </Box>
             )}
         </>
     );

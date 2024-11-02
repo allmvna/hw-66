@@ -6,9 +6,9 @@ export interface ITrackerForm {
 
 export interface ITracker {
    id: string;
-    nameCategory: string;
-    description: string;
-    calories: number;
+   nameCategory: string;
+   description: string;
+   calories: number;
 }
 
 export interface ITrackerAPI {

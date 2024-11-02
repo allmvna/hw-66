@@ -32,7 +32,7 @@ const TrackerForm = () => {
         const { name, value } = e.target;
         setForm((prevState) => ({
             ...prevState,
-            [name]: value,
+            [name]: name === "calories" ? parseFloat(value) : value,
         }));
     };
 
