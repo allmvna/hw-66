@@ -1,5 +1,5 @@
+import Tracker from "./containers/Tracker/Tracker.tsx";
 
-
-const App = () => <></>;
+const App = () => <> <Tracker/> </>;
 
 export default App;
