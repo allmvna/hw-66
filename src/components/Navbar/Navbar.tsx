@@ -35,10 +35,27 @@ const Navbar = () => {
                             </Typography>
                             <Box>
                                 <Button
+                                    to="/home"
+                                    variant="contained"
+                                    sx={{
+                                        backgroundImage: 'linear-gradient(90deg, #1e3a47, #2b4f5d, #3c6575)',
+                                        borderColor: 'white',
+                                        color: 'white',
+                                        marginRight: 2,
+                                        '&:hover': {
+                                            backgroundImage: 'linear-gradient(90deg, #0a4666, #052f46)'
+                                        }
+                                    }}
+
+                                    component={NavLink}
+                                >
+                                   Home
+                                </Button>
+                                <Button
                                     to="/add_new_meal"
                                     variant="contained"
                                     sx={{
-                                        backgroundImage: 'linear-gradient(90deg, #052f46, #0a4666)',
+                                        backgroundImage: 'linear-gradient(90deg, #1e3a47, #2b4f5d, #3c6575)',
                                         borderColor: 'white',
                                         color: 'white',
                                         '&:hover': {
