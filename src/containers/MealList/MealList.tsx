@@ -59,7 +59,7 @@ const MealList = () => {
                 variant="h4"
                 sx={{ mb: 2, textAlign: "center", color: "#000" }}
             >
-                Meal
+                Meals
             </Typography>
             {meals.length === 0 ? (
                 <Alert severity="info">
@@ -102,7 +102,7 @@ const MealList = () => {
                                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                                         <Button
                                             component={NavLink}
-                                            to={`/edit/${meal.id}`}
+                                            to={`/new_meal/${meal.id}`}
                                             variant="contained"
                                             size="medium"
                                         >
@@ -126,8 +126,8 @@ const MealList = () => {
             )}
             {meals.length > 0 && totalCalories > 0 && (
                 <Box mt={2}>
-                    <Typography variant="h6" sx={{ color: 'black'}}>
-                        <b>Total: </b>{totalCalories} calories
+                    <Typography variant="h6" sx={{ color: 'black', textAlign: 'center'}}>
+                        <b>Total count: </b>{totalCalories} calories
                     </Typography>
                 </Box>
             )}

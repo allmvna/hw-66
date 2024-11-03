@@ -1,7 +1,7 @@
 import TrackerForm from "../../components/TrackerForm/TrackerForm.tsx";
 
 
-const AddNewMeal = () => {
+const NewMeal = () => {
     return (
         <>
             <TrackerForm/>
@@ -9,4 +9,4 @@ const AddNewMeal = () => {
     );
 };
 
-export default AddNewMeal;
+export default NewMeal;

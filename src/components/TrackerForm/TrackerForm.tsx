@@ -3,6 +3,7 @@ import Grid from "@mui/material/Grid2";
 import React, {useCallback, useEffect, useState} from "react";
 import axiosAPI from "../../axiosAPI.ts";
 import {ITrackerAPI, ITrackerForm} from "../../types";
+import {useParams} from "react-router-dom";
 
 const initialState = {
     nameCategory: "",
@@ -12,11 +13,34 @@ const initialState = {
 
 const TrackerForm = () => {
     const [form, setForm] = useState<ITrackerForm>(initialState);
+    const [meal, setMeal] = useState<ITrackerAPI>({});
+   const params = useParams<{ idMeal: string }>();
+
+   const fetchOneMeal = useCallback(async (id: string) => {
+       const response: {data: ITrackerAPI} = await axiosAPI(`meal/${id}.json`);
+
+       if(response.data) {
+           setMeal(response.data);
+           setForm({
+               nameCategory: response.data.nameCategory || "",
+               description: response.data.description || "",
+               calories: response.data.calories || 0,
+           });
+       }
+   }, []);
+
+   console.log(meal);
+
+    useEffect(() => {
+        if(params.idMeal){
+            void fetchOneMeal(params.idMeal);
+        }
+    }, [params.idMeal, fetchOneMeal]);
 
 
     const fetchData = useCallback(async () => {
         try {
-            const response: { data: ITrackerAPI }  = await axiosAPI.get("/meal.json");
+            const response: { data: ITrackerAPI }  = await axiosAPI.get("meal.json");
             return Object.keys(response.data);
         } catch (error) {
             console.error(error);
@@ -46,7 +70,11 @@ const TrackerForm = () => {
     const onSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-            await axiosAPI.post("meal.json", form);
+            if(params.idMeal){
+                await axiosAPI.patch(`meal/${params.idMeal}.json`, form);
+            } else {
+                await axiosAPI.post("meal.json", form);
+            }
             setForm(initialState);
             await fetchData();
         } catch (error) {
@@ -60,7 +88,7 @@ const TrackerForm = () => {
                 sx={{ mb: 2, textAlign: "center", color: "#000" }}
                 variant="h4"
             >
-                Add new meal
+                {params.idMeal ? "Edit meal" : "Add new meal"}
             </Typography>
                 <form onSubmit={onSubmitForm}>
                     <Grid
@@ -141,7 +169,7 @@ const TrackerForm = () => {
                                     '&:hover': {
                                         backgroundImage: 'linear-gradient(90deg, #0a4666, #052f46)'
                                     }}}>
-                                Add
+                                {params.idMeal ? "Save" : "Add"}
                             </Button>
                         </Grid>
                     </Grid>

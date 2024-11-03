@@ -52,7 +52,7 @@ const Navbar = () => {
                                    Home
                                 </Button>
                                 <Button
-                                    to="/add_new_meal"
+                                    to="/new_meal"
                                     variant="contained"
                                     sx={{
                                         backgroundImage: 'linear-gradient(90deg, #1e3a47, #2b4f5d, #3c6575)',

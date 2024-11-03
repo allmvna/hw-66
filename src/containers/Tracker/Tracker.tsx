@@ -1,6 +1,6 @@
 import Navbar from "../../components/Navbar/Navbar.tsx";
 import {Route, Routes} from "react-router-dom";
-import AddNewMeal from "../AddNewMeal/AddNewMeal.tsx";
+import NewMeal from "../NewMeal/NewMeal.tsx";
 import MealList from "../MealList/MealList.tsx";
 import {Container} from "@mui/material";
 
@@ -14,7 +14,8 @@ const Tracker = () => {
             <Routes>
                 <Route path="/" element={<MealList />} />
                 <Route path="/home" element={<MealList />} />
-                <Route path="/add_new_meal" element={<AddNewMeal />} />
+                <Route path="/new_meal" element={<NewMeal />} />
+                <Route path="/new_meal/:idMeal" element={<NewMeal />} />
             </Routes>
             </Container>
         </>
