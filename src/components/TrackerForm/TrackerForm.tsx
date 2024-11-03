@@ -1,9 +1,10 @@
-import {Button, MenuItem, Select, SelectChangeEvent, TextField, Typography} from "@mui/material";
+import {Button, CircularProgress, MenuItem, Select, SelectChangeEvent, TextField, Typography} from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import React, {useCallback, useEffect, useState} from "react";
 import axiosAPI from "../../axiosAPI.ts";
 import {ITrackerAPI, ITrackerForm} from "../../types";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
+import Preloader from "../../UI/Preloader/Preloader.tsx";
 
 const initialState = {
     nameCategory: "",
@@ -13,23 +14,32 @@ const initialState = {
 
 const TrackerForm = () => {
     const [form, setForm] = useState<ITrackerForm>(initialState);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
     const [meal, setMeal] = useState<ITrackerAPI>({});
    const params = useParams<{ idMeal: string }>();
+    const navigate = useNavigate();
 
    const fetchOneMeal = useCallback(async (id: string) => {
-       const response: {data: ITrackerAPI} = await axiosAPI(`meal/${id}.json`);
+       setLoading(true);
+       try {
+           const response: {data: ITrackerAPI} = await axiosAPI(`meal/${id}.json`);
 
-       if(response.data) {
-           setMeal(response.data);
-           setForm({
-               nameCategory: response.data.nameCategory || "",
-               description: response.data.description || "",
-               calories: response.data.calories || 0,
-           });
+           if(response.data) {
+               setMeal(response.data);
+               setForm({
+                   nameCategory: response.data.nameCategory || "",
+                   description: response.data.description || "",
+                   calories: response.data.calories || 0,
+               });
+           }
+       } catch (e) {
+           console.log(e);
+       } finally {
+           setLoading(false);
        }
    }, []);
 
-   console.log(meal);
 
     useEffect(() => {
         if(params.idMeal){
@@ -39,12 +49,15 @@ const TrackerForm = () => {
 
 
     const fetchData = useCallback(async () => {
+        setLoading(true);
         try {
             const response: { data: ITrackerAPI }  = await axiosAPI.get("meal.json");
             return Object.keys(response.data);
         } catch (error) {
             console.error(error);
             return [];
+        } finally {
+            setLoading(false);
         }
     }, []);
 
@@ -69,19 +82,26 @@ const TrackerForm = () => {
 
     const onSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setIsSubmitting(true);
         try {
             if(params.idMeal){
                 await axiosAPI.patch(`meal/${params.idMeal}.json`, form);
             } else {
                 await axiosAPI.post("meal.json", form);
+                navigate('/');
             }
             setForm(initialState);
             await fetchData();
         } catch (error) {
             console.error(error);
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
+    if (loading) {
+        return <Preloader />;
+    }
     return (
         <>
             <Typography
@@ -164,12 +184,17 @@ const TrackerForm = () => {
                                 size="large"
                                 type="submit"
                                 variant="contained"
+                                disabled={isSubmitting}
                                 sx={{
                                 backgroundImage: 'linear-gradient(90deg, #052f46, #0a4666)',
                                     '&:hover': {
                                         backgroundImage: 'linear-gradient(90deg, #0a4666, #052f46)'
                                     }}}>
-                                {params.idMeal ? "Save" : "Add"}
+                                {isSubmitting ? (
+                                    <CircularProgress size={20} sx={{color: 'white'}}/>
+                                ) : (
+                                    params.idMeal ? "Save" : "Add"
+                                )}
                             </Button>
                         </Grid>
                     </Grid>
