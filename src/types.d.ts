@@ -2,6 +2,7 @@ export interface ITrackerForm {
   nameCategory: string;
   description: string;
   calories: number;
+  date: string;
 }
 
 export interface ITracker {
@@ -9,6 +10,7 @@ export interface ITracker {
   nameCategory: string;
   description: string;
   calories: number;
+  date: string;
 }
 
 export interface ITrackerAPI {
@@ -16,4 +18,5 @@ export interface ITrackerAPI {
   nameCategory: string;
   description: string;
   calories: number;
+  date: string;
 }

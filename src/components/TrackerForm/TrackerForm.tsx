@@ -1,23 +1,16 @@
-import {
-  Button,
-  CircularProgress,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-  TextField,
-  Typography,
-} from "@mui/material";
+import {Button, CircularProgress, MenuItem, Select, SelectChangeEvent, TextField, Typography,} from "@mui/material";
 import Grid from "@mui/material/Grid2";
-import React, { useCallback, useEffect, useState } from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import axiosAPI from "../../axiosAPI.ts";
-import { ITrackerAPI, ITrackerForm } from "../../types";
-import { useNavigate, useParams } from "react-router-dom";
+import {ITrackerAPI, ITrackerForm} from "../../types";
+import {useNavigate, useParams} from "react-router-dom";
 import Preloader from "../../UI/Preloader/Preloader.tsx";
 
 const initialState = {
   nameCategory: "",
   description: "",
   calories: 0,
+  date: "",
 };
 
 const TrackerForm = () => {
@@ -38,10 +31,12 @@ const TrackerForm = () => {
           nameCategory: response.data.nameCategory || "",
           description: response.data.description || "",
           calories: response.data.calories || 0,
+          date: response.data.date
         });
       }
+
     } catch (e) {
-      console.log(e);
+      console.error(e);
     } finally {
       setLoading(false);
     }
@@ -87,6 +82,7 @@ const TrackerForm = () => {
       setIsSubmitting(false);
     }
   };
+
 
   if (loading) {
     return <Preloader />;
@@ -135,6 +131,15 @@ const TrackerForm = () => {
               <MenuItem value="Dinner">Dinner</MenuItem>
             </Select>
           </Grid>
+            <Grid size={12}>
+                <TextField
+                    type="date"
+                    name="date"
+                    value={form.date}
+                    onChange={onChangeField}
+                    required
+                />
+            </Grid>
           <Grid size={12}>
             <TextField
               sx={{

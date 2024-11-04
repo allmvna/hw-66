@@ -26,8 +26,7 @@ const MealList = () => {
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const response: { data: ITrackerAPI } =
-        await axiosAPI<ITrackerAPI>("meal.json");
+      const response: { data: ITrackerAPI } = await axiosAPI.get("meal.json?orderBy/date");
 
       if (response.data) {
         const mealFromAPI = Object.keys(response.data).map((mealId) => {
@@ -35,7 +34,9 @@ const MealList = () => {
             ...response.data[mealId],
             id: mealId,
           };
-        });
+        })
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
         setMeals(mealFromAPI);
 
         const totalCalories: number = mealFromAPI.reduce(
@@ -106,6 +107,12 @@ const MealList = () => {
                 }}
               >
                 <CardContent sx={{ flexGrow: 1 }}>
+                  <Typography
+                      gutterBottom
+                      sx={{ fontSize: 14, textAlign: 'center'}}
+                  >
+                    {meal.date}
+                  </Typography>
                   <Typography
                     gutterBottom
                     sx={{ fontSize: 18, color: "secondary" }}
