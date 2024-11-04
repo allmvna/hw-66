@@ -21,7 +21,7 @@ const MealList = () => {
   const [meals, setMeals] = useState<ITracker[]>([]);
   const [totalCalories, setTotalCalories] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState<{ [id: string]: boolean }>({});
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -53,7 +53,7 @@ const MealList = () => {
   }, []);
 
   const deleteMeal = async (id: string) => {
-    setIsSubmitting(true);
+    setIsSubmitting((prev) => ({ ...prev, [id]: true }));
     try {
       const mealToDelete = meals.find((meal) => meal.id === id);
       if (mealToDelete) {
@@ -69,7 +69,7 @@ const MealList = () => {
     } catch (e) {
       console.error(e);
     } finally {
-      setIsSubmitting(false);
+      setIsSubmitting((prev) => ({ ...prev, [id]: false }));
     }
   };
 
@@ -154,12 +154,12 @@ const MealList = () => {
                       variant="contained"
                       size="medium"
                       color="error"
-                      disabled={isSubmitting}
+                      disabled={isSubmitting[meal.id]}
                     >
-                      {isSubmitting ? (
-                        <CircularProgress size={20} />
+                      {isSubmitting[meal.id] ? (
+                          <CircularProgress size={20} />
                       ) : (
-                        <DeleteOutlineIcon />
+                          <DeleteOutlineIcon />
                       )}
                     </Button>
                   </Box>
